@@ -1,15 +1,35 @@
 import { useState } from "react"
 import { v4 as uuidv4 } from 'uuid'
+import listService from '../services/lists'
+import { useEffect } from "react"
 
 const ExerciseForm = () => {
-  const bodyParts = ['back', 'cardio', 'chest', 'lower arms', 'lower legs', 'neck', 'shoulders', 'upper arms', 'upper legs', 'waist']
-  const equipments = ['assisted', 'band', 'barbell', 'body weight', 'cable', 'dumbbell', 'machine', 'ez barbell', 'kettlebell',
-    'medicine ball', 'resistance band', 'roller', 'rope', 'stability ball', 'trap bar', 'weighted']
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
-  const [equipment, setEquipment] = useState(equipments[0])
-  const [bodyPart, setBodyPart] = useState(bodyParts[0])
+  const [equipments, setEquipments] = useState(null)
+  const [equipment, setEquipment] = useState(null)
+  const [bodyParts, setBodyParts] = useState(null)
+  const [bodyPart, setBodyPart] = useState(null)
   const [instructions, setInstructions] = useState([])
+
+  const getEquipmentHook = () => {
+    listService.getEquipment()
+      .then(equipment => {
+        setEquipments(equipment)
+        setEquipment(equipment[0])
+      })
+  }
+
+  const getBodyPartsHook = () => {
+    listService.getBodyParts()
+      .then(bodyParts => {
+        setBodyParts(bodyParts)
+        setBodyPart(bodyParts[0])
+      })
+  }
+
+  useEffect(getEquipmentHook, [])
+  useEffect(getBodyPartsHook, [])
 
   const addBlankInstruction = () => {
     setInstructions(instructions.concat({
@@ -44,25 +64,30 @@ const ExerciseForm = () => {
       </label>
       <br />
       <label>Equipment:
-        <select value={equipment} onChange={(e) => setEquipment(e.target.value)}>
-          {equipments.map(e => <option key={e} value={e}>{e}</option>)}
-        </select>
+        {equipments === null
+          ? null
+          : <select value={equipment} onChange={(e) => setEquipment(e.target.value)}>
+            {equipments.map(e => <option key={e} value={e}>{e}</option>)}
+          </select>}
       </label>
       <br />
       <label>Body Part:
-        <select value={bodyPart} onChange={(e) => setBodyPart(e.target.value)}>
-          {bodyParts.map(bp => <option key={bp} value={bp}>{bp}</option>)}
-        </select>
+        {bodyParts === null
+          ? null
+          : <select value={bodyPart} onChange={(e) => setBodyPart(e.target.value)}>
+            {bodyParts.map(bp => <option key={bp} value={bp}>{bp}</option>)}
+          </select>}
       </label>
       <br />
       {instructions.length === 0
-      ? null
-      : <ol>
+        ? null
+        : <ol>
           {instructions.map(ints => {
-             return (<li key={ints.id}>
+            return (<li key={ints.id}>
               <textarea value={ints.content} onChange={(e) => updateInstruction(e, ints.id)} />
-                <button onClick={() => deleteInstruction(ints.id)}>Remove</button>
-            </li>)})}
+              <button onClick={() => deleteInstruction(ints.id)}>Remove</button>
+            </li>)
+          })}
         </ol>}
       <button type="button" onClick={addBlankInstruction}>Add instruction</button>
     </form>

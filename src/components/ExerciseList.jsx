@@ -19,11 +19,13 @@ const Exercise = ({ exercise }) => {
     <div>
       <h2>{exercise.name}</h2>
       <p>{exercise.description}</p>
-      <button onClick={toggleDisplayInstructions}>{displayInstructions ? 'Hide' : 'Show'} instructions</button>
-      {displayInstructions
+      {!exercise.instructions
+        ? 'No instructions to display'
+        : (<button onClick={toggleDisplayInstructions}>{displayInstructions ? 'Hide' : 'Show'} instructions</button>)}
+        {displayInstructions
         ? <Instructions instructions={exercise.instructions} />
         : null
-      }
+        }
     </div>
 
   )

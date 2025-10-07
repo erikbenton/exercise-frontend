@@ -3,14 +3,14 @@ import { v4 as uuidv4 } from 'uuid'
 import listService from '../services/lists'
 import { useEffect } from "react"
 
-const ExerciseForm = () => {
+const ExerciseForm = ({ createExercise }) => {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
-  const [equipments, setEquipments] = useState(null)
   const [equipment, setEquipment] = useState(null)
-  const [bodyParts, setBodyParts] = useState(null)
   const [bodyPart, setBodyPart] = useState(null)
   const [instructions, setInstructions] = useState([])
+  const [equipments, setEquipments] = useState(null)
+  const [bodyParts, setBodyParts] = useState(null)
 
   const getEquipmentHook = () => {
     listService.getEquipment()
@@ -53,8 +53,26 @@ const ExerciseForm = () => {
     }
   }
 
+  const addExercise = e => {
+    e.preventDefault()
+
+    createExercise({
+      name,
+      description: description === '' ? null : description,
+      equipment,
+      bodyPart,
+      instructions: instructions.length === 0 ? null : instructions,
+    })
+
+    setName('')
+    setDescription('')
+    setEquipment(equipments[0])
+    setBodyPart(bodyParts[0])
+    setInstructions([])
+  }
+
   return (
-    <form>
+    <form onSubmit={addExercise}>
       <label>Name:
         <input value={name} onChange={(e) => setName(e.target.value)} type='text' />
       </label>
@@ -79,7 +97,7 @@ const ExerciseForm = () => {
           </select>}
       </label>
       <br />
-      {instructions.length === 0
+      {instructions === null || instructions.length === 0
         ? null
         : <ol>
           {instructions.map(ints => {
@@ -90,6 +108,7 @@ const ExerciseForm = () => {
           })}
         </ol>}
       <button type="button" onClick={addBlankInstruction}>Add instruction</button>
+      <button type="submit">Create Exercise</button>
     </form>
   )
 }

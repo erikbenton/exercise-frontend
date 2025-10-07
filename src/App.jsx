@@ -11,10 +11,15 @@ const App = () => {
       .then(exercises => setExercises(exercises))
   }, [])
 
+  const createExercise = async (exerciseObject) => {
+    const exercise = await exerciseService.create(exerciseObject)
+    setExercises(exercises.concat(exercise))
+  }
+
   return (
     <>
       <h1>Exercise CRUD</h1>
-      <ExerciseForm />
+      <ExerciseForm createExercise={createExercise} />
       {exercises && <ExerciseList exercises={exercises} />}
     </>
   )

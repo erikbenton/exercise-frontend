@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import Togglable from './Togglable'
 
 const ExerciseList = ({ exercises }) => {
   return (
@@ -9,23 +9,16 @@ const ExerciseList = ({ exercises }) => {
 }
 
 const Exercise = ({ exercise }) => {
-  const [displayInstructions, setDisplayInstruction] = useState(false)
-
-  const toggleDisplayInstructions = () => {
-    setDisplayInstruction(!displayInstructions)
-  }
-
   return (
     <div>
       <h2>{exercise.name}</h2>
       <p>{exercise.description}</p>
       {!exercise.instructions
         ? 'No instructions to display'
-        : (<button onClick={toggleDisplayInstructions}>{displayInstructions ? 'Hide' : 'Show'} instructions</button>)}
-        {displayInstructions
-        ? <Instructions instructions={exercise.instructions} />
-        : null
-        }
+        : <Togglable buttonLabel="Show instructions">
+            <Instructions instructions={exercise.instructions} />
+          </Togglable>
+      }
     </div>
 
   )

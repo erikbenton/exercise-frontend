@@ -1,25 +1,26 @@
 import Togglable from './Togglable'
 
-const ExerciseList = ({ exercises }) => {
+const ExerciseList = ({ exercises, deleteExercise }) => {
   return (
     <ul>
-      {exercises.map(exercise => <Exercise key={exercise.id} exercise={exercise} />)}
+      {exercises.map(exercise => <Exercise key={exercise.id} exercise={exercise} deleteExercise={deleteExercise} />)}
     </ul>
   )
 }
 
-const Exercise = ({ exercise }) => {
+const Exercise = ({ exercise, deleteExercise }) => {
   return (
-    <div>
+    <li>
       <h2>{exercise.name}</h2>
       <p>{exercise.description}</p>
       {!exercise.instructions
-        ? 'No instructions to display'
-        : <Togglable buttonLabel="Show instructions">
-            <Instructions instructions={exercise.instructions} />
-          </Togglable>
+        ? <p>No instructions to display</p>
+        : <Togglable showLabel="Show instructions" hideLabel="Hide instructions">
+          <Instructions instructions={exercise.instructions} />
+        </Togglable>
       }
-    </div>
+      <button onClick={() => deleteExercise(exercise)}>Delete Exercise</button>
+    </li>
 
   )
 }
@@ -27,7 +28,7 @@ const Exercise = ({ exercise }) => {
 const Instructions = ({ instructions }) => {
   return (
     <ol>
-      {instructions.map((instruction, index) => <li key={index}>{instruction}</li>)}
+      {instructions.map((instruction) => <li key={instruction.id}>{instruction.content}</li>)}
     </ol>
   )
 }

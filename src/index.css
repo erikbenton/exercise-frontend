@@ -1,0 +1,11 @@
+.notification {
+  font-size: 2rem;
+}
+
+.error {
+  background-color: lightcoral;
+}
+
+.success {
+  background-color: lightgreen;
+}
